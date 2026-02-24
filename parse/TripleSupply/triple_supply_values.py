@@ -23,11 +23,21 @@ mod.check_if_src_is_newer()
 
 with mod.edit(r"GameData/Generated/Gameplay/Gfx/BuildingDescriptors.ndf", not dry_run) as source:
     for obj_row in source:
-        # each time we get here it means that we've got ammunition of matching caliber
-        print(f"Processing {obj_row.namespace}... ")
         module_descriptors_row = obj_row.value.by_member("ModulesDescriptors")
         for list_row in module_descriptors_row.value.match_pattern("TSupplyModuleDescriptor()"):
+            print(f"Processing {obj_row.namespace}... ")
             supply_capacity_row = list_row.value.by_member("SupplyCapacity")
             original_value_float = float(supply_capacity_row.value)
             supply_capacity_row.value = original_value_float * 3
-print("DONE!")
+print("Buildings DONE!")
+
+
+with mod.edit(r"GameData/Generated/Gameplay/Gfx/UniteDescriptor.ndf", not dry_run) as source:
+    for obj_row in source:
+        module_descriptors_row = obj_row.value.by_member("ModulesDescriptors")
+        for list_row in module_descriptors_row.value.match_pattern("TSupplyModuleDescriptor()"):
+            print(f"Processing {obj_row.namespace}... ")
+            supply_capacity_row = list_row.value.by_member("SupplyCapacity")
+            original_value_float = float(supply_capacity_row.value)
+            supply_capacity_row.value = original_value_float * 3
+print("Units DONE!")
