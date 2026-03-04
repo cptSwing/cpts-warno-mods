@@ -10,3 +10,7 @@ Repo for several small mods of mine, for RTS game WARNO
 ### Triple Supply
 
 `poetry run python parse/TripleSupply/triple_supply_values.py`
+
+### HarderToSpotInfantry
+
+`poetry run python parse/HarderToSpotInfantry/modify_infantry_concealment.py`
