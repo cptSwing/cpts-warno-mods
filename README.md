@@ -4,6 +4,8 @@ Repo for several small mods of mine, for RTS game WARNO
 
 ### Installation
 
+Requires `poetry` (package manager for python)
+
 1. `poetry install`
 2. `poetry run python tools/setup_env.py` and follow on-screen prompts
 

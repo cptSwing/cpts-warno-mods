@@ -12,11 +12,11 @@ env = load_env()
 dry_run = True
 print(f"Dry run: {dry_run}")
 
-warno_mods_folder = Path(env["WARNO_MODS_FOLDER"]) # automatically handles slashes in various OS's
+WARNO_MODS_FOLDER = Path(env["WARNO_MODS_FOLDER"]) # automatically handles slashes in various OS's
 destination_mod_name = env["MY_WARNO_MOD_NAME"]
 
-source_mod_folder = warno_mods_folder / "SourceModPointOfTruth" 
-destination_mod_folder = warno_mods_folder / destination_mod_name
+source_mod_folder = WARNO_MODS_FOLDER / "SourceModPointOfTruth" 
+destination_mod_folder = WARNO_MODS_FOLDER / destination_mod_name
 
 mod = ndf.Mod(source_mod_folder, destination_mod_folder)
 mod.check_if_src_is_newer()

@@ -3,25 +3,22 @@ from pathlib import Path
 
 # Add tools folder relative to this script
 import sys
-tools_path = Path(__file__).resolve().parent.parent.parent / "tools"
-sys.path.insert(0, str(tools_path))
-from load_env import load_env
 
-env = load_env()
+WARNO_MODS_FOLDER = sys.argv[1]
+NDF_PARSE_SOURCE_MOD_NAME = sys.argv[2]
+DEBUG_MODE = sys.argv[3] == "True"
 
-dry_run = False
-print(f"Dry run: {dry_run}")
+print(f"Dry run: {DEBUG_MODE}")
 
-warno_mods_folder = Path(env["WARNO_MODS_FOLDER"]) # automatically handles slashes in various OS's
-destination_mod_name = env["MY_WARNO_MOD_NAME"]
+WARNO_MODS_FOLDER = Path(WARNO_MODS_FOLDER) # automatically handles slashes in various OS's
 
-source_mod_folder = warno_mods_folder / "SourceModPointOfTruth" 
-destination_mod_folder = warno_mods_folder / destination_mod_name
+source_mod_folder = WARNO_MODS_FOLDER / NDF_PARSE_SOURCE_MOD_NAME 
+destination_mod_folder = WARNO_MODS_FOLDER / "TripleSupply"
 
 mod = ndf.Mod(source_mod_folder, destination_mod_folder)
 mod.check_if_src_is_newer()
 
-with mod.edit(r"GameData/Generated/Gameplay/Gfx/BuildingDescriptors.ndf", not dry_run) as source:
+with mod.edit(r"GameData/Generated/Gameplay/Gfx/BuildingDescriptors.ndf", not DEBUG_MODE) as source:
     for obj_row in source:
         module_descriptors_row = obj_row.value.by_member("ModulesDescriptors")
         for list_row in module_descriptors_row.value.match_pattern("TSupplyModuleDescriptor()"):
@@ -32,7 +29,7 @@ with mod.edit(r"GameData/Generated/Gameplay/Gfx/BuildingDescriptors.ndf", not dr
 print("Buildings DONE!")
 
 
-with mod.edit(r"GameData/Generated/Gameplay/Gfx/UniteDescriptor.ndf", not dry_run) as source:
+with mod.edit(r"GameData/Generated/Gameplay/Gfx/UniteDescriptor.ndf", not DEBUG_MODE) as source:
     for obj_row in source:
         module_descriptors_row = obj_row.value.by_member("ModulesDescriptors")
         for list_row in module_descriptors_row.value.match_pattern("TSupplyModuleDescriptor()"):
