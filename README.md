@@ -6,13 +6,21 @@ Repo for several small mods of mine, for RTS game WARNO. Mods are created by mod
 
 Requires `poetry` (package manager for python)
 
+#### First Installation
+
 1. `poetry install`
 
 2. Edit your `config.env` file to the paths relevant on your system
 
-3. Double click `tools\main.bat`
+#### Generating Mods (after first installation, or if WARNO version changes)
 
-4. Follow on-screen instructions
+1. Double click `tools\main.bat`
+
+2. Choose "(Re-)Generate Source Mod" Option (or however you call it)
+
+3. (Re-)Generate the below mods as needed
+
+4. Upload the below mods to Steam Workshop as needed
 
 ### Mods
 
