@@ -1,18 +1,30 @@
 # cpts-warno-mods
 
-Repo for several small mods of mine, for RTS game WARNO
+Repo for several small mods of mine, for RTS game WARNO. Mods are created by modifying files using `ndf-parse` in python. Includes a wrapper to call the python script, and to further deal with WARNOs modding tools.
 
-### Installation
+### Installation, Configuration
 
 Requires `poetry` (package manager for python)
 
 1. `poetry install`
-2. `poetry run python tools/setup_env.py` and follow on-screen prompts
 
-### Triple Supply
+2. Edit your `config.env` file to the paths relevant on your system
 
-`poetry run python parse/TripleSupply/triple_supply_values.py`
+3. Double click `tools\main.bat`
 
-### HarderToSpotInfantry
+4. Follow on-screen instructions
 
-`poetry run python parse/HarderToSpotInfantry/modify_infantry_concealment.py`
+### Mods
+
+#### DoubleSupply
+
+Doubles the value of supply that logistics vehicles and FOB bases can supply.
+
+#### TripleSupply
+
+Triples the value of supply that logistics vehicles and FOB bases can supply.
+
+#### YIMBY (WIP)
+
+Hides and protects infantry in buildings/ruins a little better.
+Raises protection from 3 to 3.5, and stealth from XX to XX.
