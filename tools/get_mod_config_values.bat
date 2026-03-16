@@ -9,8 +9,8 @@ setlocal EnableDelayedExpansion
 set "EXPORTS="
 
 for /f "usebackq tokens=1,2 eol=; delims==;" %%I in ("%CONFIG_FILE%") do (
-  call :trim KEY "%%I"
-  call :trim VALUE "%%J"
+  call :trim KEY "%%~I"
+  call :trim VALUE "%%~J"
   set "EXPORTS=!EXPORTS! & set "!KEY!=!VALUE!""
 )
 
