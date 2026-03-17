@@ -1,11 +1,16 @@
-@echo off
+setlocal EnableDelayedExpansion
 set "CONFIG_FILE=%~1"
+set "ECHO_ERRORS=%~2"
+
 if not exist "%CONFIG_FILE%" (
-  echo --- Error: Config file at %CONFIG_FILE% does not exist!
+  if "ECHO_ERRORS"!=="OFF" (
+    echo.
+    echo --- Error reading Config.ini: File at %CONFIG_FILE% does not exist!
+  )
+  endlocal
   exit /b 1
 )
 
-setlocal EnableDelayedExpansion
 set "EXPORTS="
 
 for /f "usebackq tokens=1,2 eol=; delims==;" %%I in ("%CONFIG_FILE%") do (

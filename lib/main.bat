@@ -1,5 +1,4 @@
 @echo off
-
 rem change working directory to directory where script resides
 cd /d "%~dp0"
 
@@ -16,12 +15,15 @@ set LOOP_INDEX=0
 for %%I in (%MOD_NAMES:,= %) do (
   set /a LOOP_INDEX=!LOOP_INDEX!+1
   if %MENU_CHOICE% equ !LOOP_INDEX! (
+    pushd command
     if "%%~I"=="%NDF_PARSE_SOURCE_MOD_NAME%" (
-      call create_new_mod.bat "%NDF_PARSE_SOURCE_MOD_NAME%"
-      call generate_mod.bat "%NDF_PARSE_SOURCE_MOD_NAME%"
-    ) else (
-      call process_mod_info.bat "%%~I"
+      rem deletes, recreates, regenerates the source mod
+      call create.bat "%NDF_PARSE_SOURCE_MOD_NAME%"
+      call generate.bat "%NDF_PARSE_SOURCE_MOD_NAME%"
+      ) else (
+      call process.bat "%%~I"
     )
+    popd
     goto main
   )
 )
@@ -44,20 +46,20 @@ for %%I in (%MOD_NAMES:,= %) do (
   set /a LOOP_INDEX=!LOOP_INDEX!+1
   call set "THIS_MOD_GEN_VERSION=%%%%~I_MOD_GEN_VERSION%%"
   call set "THIS_MOD_VERSION=%%%%~I_MOD_VERSION%%"
-
+  
   if "!THIS_MOD_GEN_VERSION!"=="" (
     echo !LOOP_INDEX!: Generate %%~I ^(also adds Config file^)
-  ) else (
+    ) else (
     if !THIS_MOD_VERSION!==0 (
       set "VERSION_STRING=New"
-    ) else (
+      ) else (
       set "VERSION_STRING=Version !THIS_MOD_VERSION!"
     )
     echo !LOOP_INDEX!: Re-Generate %%~I ^(!VERSION_STRING!, ModGenVersion !THIS_MOD_GEN_VERSION!^)
   )
-
+  
   if "%%~I"=="%NDF_PARSE_SOURCE_MOD_NAME%" (
-    echo    ALWAYS do this before any of the following updates^^!
+    echo ALWAYS do this before any of the following updates^^!
     echo -----------------
   )
 )
@@ -69,22 +71,23 @@ echo.
 endlocal
 choice /C 1234DX /M "Select an option "
 set MENU_CHOICE=%ERRORLEVEL%
-echo.
 exit /b
 
 
 
 :get_config_env_variables
-call get_mod_config_values.bat "%~dp0..\config.env"
+pushd command
+call get_config.bat "%~dp0..\config.env"
+popd
 if "%WARNO_MODS_FOLDER%"=="" echo --- Error: WARNO_MODS_FOLDER is not defined in config.env^^! & goto end
 if "%NDF_PARSE_SOURCE_MOD_NAME%"=="" echo --- Error: NDF_PARSE_SOURCE_MOD_NAME is not defined in config.env^^! & goto end
 if "%USER_MOD_CONFIG_FOLDER%"=="" echo --- Error: USER_MOD_CONFIG_FOLDER is not defined in config.env^^! & goto end
 if "%DEBUG_MODE%"=="ON" (
   echo.
   echo +++ Debugging output of :get_config_env_variables
-  echo + WARNO Mods folder: [%WARNO_MODS_FOLDER%]
-  echo + Source mod name:   [%NDF_PARSE_SOURCE_MOD_NAME%]
-  echo + Mod Config folder: [%USER_MOD_CONFIG_FOLDER%]
+  echo + WARNO Mods folder:  [%WARNO_MODS_FOLDER%]
+  echo + Name of Source Mod: [%NDF_PARSE_SOURCE_MOD_NAME%]
+  echo + Mod Config folder:  [%USER_MOD_CONFIG_FOLDER%]
   echo.
 )
 exit /b
@@ -95,7 +98,9 @@ exit /b
 for %%I in (%MOD_NAMES:,= %) do (
   if not exist "%WARNO_MODS_FOLDER%\%%~I\" (
     echo --- Error: %%~I does not exist at %WARNO_MODS_FOLDER%\ - CREATING mod ...
-    call create_new_mod.bat "%%~I"
+    pushd command
+    call create.bat "%%~I"
+    popd
   )
 )
 exit /b
@@ -107,11 +112,13 @@ setlocal EnableDelayedExpansion
 set "EXPORTS="
 for %%I in (%MOD_NAMES:,= %) do (
   if not exist "%USER_MOD_CONFIG_FOLDER%\%%~I\" (
-    choice /C yN  /T 5 /D N /M "*** WARNING: Config file location for %%~I does not exist - Would you like to GENERATE your mod? (Defaults to N after 5 seconds) "
+    choice /C yN  /T 5 /D N /M "*** WARNING: Config file location for %%~I does not exist - Would you like to GENERATE your mod? "
     set GENERATE_MOD_CHOICE=!ERRORLEVEL!
     if !GENERATE_MOD_CHOICE! equ 1 (
-      call generate_mod.bat "%%~I"
-    ) else (
+      pushd command
+      call generate.bat "%%~I"
+      popd
+      ) else (
       rem set variable to undefined
       set "EXPORTS=!EXPORTS! & set "%%~I_MOD_GEN_VERSION=""
     )
@@ -127,7 +134,9 @@ setlocal EnableDelayedExpansion
 set "EXPORTS="
 for %%I in (%MOD_NAMES:,= %) do (
   set "MOD_CONFIG_FILE=%USER_MOD_CONFIG_FOLDER%\%%~I\Config.ini"
-  call get_mod_config_values.bat "!MOD_CONFIG_FILE!"
+  pushd command
+  call get_config.bat "!MOD_CONFIG_FILE!" "OFF"
+  popd
   set GET_MOD_CONFIG_ERROR_LEVEL=!ERRORLEVEL!
   if !GET_MOD_CONFIG_ERROR_LEVEL! equ 0 (
     set "EXPORTS=!EXPORTS! & set "%%~I_MOD_VERSION=!Version!" & set "%%~I_MOD_GEN_VERSION=!ModGenVersion!""
@@ -144,13 +153,13 @@ if "%DEBUG_MODE%"=="ON" (
   ) else (
   set "DEBUG_MODE=ON"
 )
-echo +++ Debug set to %DEBUG_MODE%
-echo.
+echo +++ Debug mode set to %DEBUG_MODE%
 exit /b
 
 
 
 :end
+echo.
 echo +++ Exiting
 endlocal
 exit /b
