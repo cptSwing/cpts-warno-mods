@@ -24,11 +24,11 @@ Generally, every time WARNO is updated you want to re-generate your Source Mod, 
 
 ##### DoubleSupply
 
-Doubles the value of supply that logistics vehicles and FOB bases can supply.
+Doubles the value of supply that logistics vehicles and FOB bases can hold.
 
 ##### TripleSupply
 
-Triples the value of supply that logistics vehicles and FOB bases can supply.
+Triples the value of supply that logistics vehicles and FOB bases can hold.
 
 ##### YIMBY* (WIP)
 
