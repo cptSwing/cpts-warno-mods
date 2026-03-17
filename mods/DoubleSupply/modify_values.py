@@ -1,46 +1,40 @@
-import ndf_parse as ndf
-from pathlib import Path
-
-# Add tools folder relative to this script
 import sys
+import ndf_parse as ndf
 
-WARNO_MODS_FOLDER = sys.argv[1]
-NDF_PARSE_SOURCE_MOD_NAME = sys.argv[2]
-DEBUG_MODE = sys.argv[3] == "True"
+source_mod_folder = sys.argv[1]
+destination_mod_folder = sys.argv[2]
+debug_mode = sys.argv[3] == "ON"
 
-if DEBUG_MODE: print(f"Dry run: {DEBUG_MODE}")
-
-WARNO_MODS_FOLDER = Path(WARNO_MODS_FOLDER) # automatically handles slashes in various OS's
-
-source_mod_folder = WARNO_MODS_FOLDER / NDF_PARSE_SOURCE_MOD_NAME 
-destination_mod_folder = WARNO_MODS_FOLDER / "DoubleSupply"
+supply_multiplier = 2
 
 try: 
     mod = ndf.Mod(source_mod_folder, destination_mod_folder)
     mod.check_if_src_is_newer()
 
-    with mod.edit(r"GameData/Generated/Gameplay/Gfx/BuildingDescriptors.ndf", not DEBUG_MODE) as source:
+    print("\n+ ndf_parse: Modifying Buildings")
+    with mod.edit(r"GameData/Generated/Gameplay/Gfx/BuildingDescriptors.ndf", not debug_mode) as source:
         for obj_row in source:
             module_descriptors_row = obj_row.value.by_member("ModulesDescriptors")
             for list_row in module_descriptors_row.value.match_pattern("TSupplyModuleDescriptor()"):
-                print(f"Processing {obj_row.namespace}... ")
-                supply_capacity_row = list_row.value.by_member("SupplyCapacity")
-                original_value_float = float(supply_capacity_row.value)
-                supply_capacity_row.value = original_value_float * 2
-    print("Buildings DONE!")
+                supply_capacity = list_row.value.by_member("SupplyCapacity")
+                original_value = float(supply_capacity.value)
+                modified_value = original_value * supply_multiplier
+                supply_capacity.value = modified_value
+                print(f"+ ndf_parse: {obj_row.namespace} - SupplyCapacity {original_value} --> {modified_value}")
+    print("+ ndf_parse: Supply Buildings DONE!\n")
 
-
-    with mod.edit(r"GameData/Generated/Gameplay/Gfx/UniteDescriptor.ndf", not DEBUG_MODE) as source:
+    print("+ ndf_parse: Modifying Units")
+    with mod.edit(r"GameData/Generated/Gameplay/Gfx/UniteDescriptor.ndf", not debug_mode) as source:
         for obj_row in source:
             module_descriptors_row = obj_row.value.by_member("ModulesDescriptors")
             for list_row in module_descriptors_row.value.match_pattern("TSupplyModuleDescriptor()"):
-                print(f"Processing {obj_row.namespace}... ")
-                supply_capacity_row = list_row.value.by_member("SupplyCapacity")
-                original_value_float = float(supply_capacity_row.value)
-                supply_capacity_row.value = original_value_float * 2
-    print("Units DONE!")
+                supply_capacity = list_row.value.by_member("SupplyCapacity")
+                original_value = float(supply_capacity.value)
+                modified_value = original_value * supply_multiplier
+                supply_capacity.value = modified_value
+                print(f"+ ndf_parse: {obj_row.namespace} - SupplyCapacity {original_value} --> {modified_value}")
+    print("+ ndf_parse: Supply Units DONE!\n")
+    sys.exit(0)
 except Exception as err:
-    print("Python: Error:", err)
+    print("\n+ ndf_parse Error (modify_values.py):", err)
     sys.exit(1)
-
-sys.exit(0)
