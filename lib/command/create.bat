@@ -1,5 +1,5 @@
 setlocal
-set MOD_NAME=%~1
+set "MOD_NAME=%~1"
 set "MY_MOD_FOLDER=%WARNO_MODS_FOLDER%\%MOD_NAME%"
 
 if exist "%MY_MOD_FOLDER%\" (
