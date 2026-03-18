@@ -2,9 +2,9 @@
 rem change working directory to directory where script resides
 cd /d "%~dp0"
 
-set DEBUG_MODE=ON
+set DEBUG_MODE=OFF
 call :get_config_env_variables
-set MOD_NAMES="%NDF_PARSE_SOURCE_MOD_NAME%","DoubleSupply","TripleSupply","YIMBY"
+set MOD_NAMES="%NDF_PARSE_SOURCE_MOD_NAME%","DoubleSupply","TripleSupply","YIMBY","Entrench"
 call :validate_mods_folders
 call :validate_mods_config_folders
 
@@ -27,8 +27,8 @@ for %%I in (%MOD_NAMES:,= %) do (
     goto main
   )
 )
-if %MENU_CHOICE% equ 5 call :toggledebug & goto main
-if %MENU_CHOICE% equ 6 goto end
+if %MENU_CHOICE% equ 6 call :toggledebug & goto main
+if %MENU_CHOICE% equ 7 goto end
 endlocal
 goto end
 
@@ -69,7 +69,7 @@ echo -----------------
 echo X: Exit
 echo.
 endlocal
-choice /C 1234DX /M "Select an option "
+choice /C 12345DX /M "Select an option "
 set MENU_CHOICE=%ERRORLEVEL%
 exit /b
 

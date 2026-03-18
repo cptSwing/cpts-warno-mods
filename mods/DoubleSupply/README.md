@@ -1,1 +1,5 @@
-Doubles the value of supply that logistics vehicles and FOB bases can hold.
+## DoubleSupply
+
+#### Doubles the Amount of Supply of Logistics Vehicles and FOB Bases
+
+`SupplyCapacity` in `BuildingDescriptors.ndf` and `UniteDescriptor.ndf` is multiplied by 2

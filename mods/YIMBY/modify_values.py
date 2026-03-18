@@ -8,7 +8,7 @@ debug_mode = sys.argv[3] == "ON"
 additional_concealment_bonus = 0.25
 subtracted_damage = 0.05
 
-# ndf_parse can't currently parse `unnamed TGameplayTerrainsRegistration( Terrains = [ TGameplayTerrain(), TGameplayTerrain(), TGameplayTerrain() ] )`, so I need to extract the list of `TGameplayTerrain()`'s from a string :/
+# ndf_parse can't currently parse `unnamed TGameplayTerrainsRegistration( Terrains = [ TGameplayTerrain(), TGameplayTerrain(), TGameplayTerrain() ] )` as far as I can tell, so I need to extract the list of `TGameplayTerrain()`'s from a string :/
 def extract_terrains_list(text) -> str | None:
     key = "TGameplayTerrainsRegistration"
     start = text.find(key)

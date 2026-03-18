@@ -10,30 +10,42 @@ set PYTHON_RETURN=%ERRORLEVEL%
 
 if %PYTHON_RETURN% equ 0 (
   echo.
-  call generate.bat "%MOD_NAME%"
+  choice /C Yn /M "+++ Would you like to GENERATE %MOD_NAME%? "
+  set GENERATION_CHOICE=!ERRORLEVEL!
+  if !GENERATION_CHOICE! equ 1 (
+    call generate.bat "%MOD_NAME%"
+  )
   
   if "%DEBUG_MODE%"=="ON" (
     echo.
     echo ndf_parse executed successfully, exiting since DEBUG_MODE == True
-    ) else (
-    call update_config.bat "%MOD_NAME%"
-    
-    choice /C yN /T:5 /D N /M "+++ Generated mod files & updated Config.ini version - Would you like to upload your %MOD_NAME% to Steam? "
-    set UPLOAD_CHOICE=!ERRORLEVEL!
-    if !UPLOAD_CHOICE! equ 1 (
-      call upload.bat "%MOD_NAME%"
+  ) else (
+    echo.
+    choice /C yN /M "+++ Would you like update %MOD_NAME%'s Version number? "
+    set VERSION_CHOICE=!ERRORLEVEL!
+    if !VERSION_CHOICE! equ 1 (
+      call update_config.bat "%MOD_NAME%"
     )
     
-    choice /C yN /T:5 /D N /M "+++ Would you like to launch the Game with %MOD_NAME% (dev mode)? "
+    echo.
+    choice /C yN /M "+++ Would you like to launch WARNO with %MOD_NAME% (dev mode)? "
     set LAUNCH_CHOICE=!ERRORLEVEL!
     if !LAUNCH_CHOICE! equ 1 (
       call launch.bat "%MOD_NAME%"
     )
+    
+    echo.
+    choice /C yN /M "+++ Would you like to upload %MOD_NAME% to Steam Workshop? "
+    set UPLOAD_CHOICE=!ERRORLEVEL!
+    if !UPLOAD_CHOICE! equ 1 (
+      call upload.bat "%MOD_NAME%"
+    )
   )
-  ) else (
+) else (
   echo.
   echo --- Errorlevel "%PYTHON_RETURN%"
 )
+
 
 endlocal
 exit /b
