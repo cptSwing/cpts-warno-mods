@@ -29,7 +29,6 @@ def extract_terrains_list(text) -> str | None:
                 #  returns W/OUT the outer brackets:
                 return text[start + 1:i]
 
-
     return None
 
 
