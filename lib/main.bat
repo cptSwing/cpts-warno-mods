@@ -2,11 +2,12 @@
 rem change working directory to directory where script resides
 cd /d "%~dp0"
 
-set DEBUG_MODE=OFF
 call :get_config_env_variables
 set MOD_NAMES="%NDF_PARSE_SOURCE_MOD_NAME%","DoubleSupply","TripleSupply","YIMBY","Entrench"
 call :validate_mods_folders
 call :validate_mods_config_folders
+
+
 
 :main
 call :menu
@@ -16,13 +17,15 @@ for %%I in (%MOD_NAMES:,= %) do (
   set /a LOOP_INDEX=!LOOP_INDEX!+1
   if %MENU_CHOICE% equ !LOOP_INDEX! (
     pushd command
+
     if "%%~I"=="%NDF_PARSE_SOURCE_MOD_NAME%" (
       rem deletes, recreates, regenerates the source mod
       call create.bat "%NDF_PARSE_SOURCE_MOD_NAME%"
       call generate.bat "%NDF_PARSE_SOURCE_MOD_NAME%"
-      ) else (
+    ) else (
       call process.bat "%%~I"
     )
+
     popd
     goto main
   )
@@ -31,6 +34,7 @@ if %MENU_CHOICE% equ 6 call :toggledebug & goto main
 if %MENU_CHOICE% equ 7 goto end
 endlocal
 goto end
+
 
 
 :menu
@@ -49,10 +53,10 @@ for %%I in (%MOD_NAMES:,= %) do (
   
   if "!THIS_MOD_GEN_VERSION!"=="" (
     echo !LOOP_INDEX!: Generate %%~I ^(also adds Config file^)
-    ) else (
+  ) else (
     if !THIS_MOD_VERSION!==0 (
       set "VERSION_STRING=New"
-      ) else (
+    ) else (
       set "VERSION_STRING=Version !THIS_MOD_VERSION!"
     )
     echo !LOOP_INDEX!: Re-Generate %%~I ^(!VERSION_STRING!, ModGenVersion !THIS_MOD_GEN_VERSION!^)
@@ -112,13 +116,13 @@ setlocal EnableDelayedExpansion
 set "EXPORTS="
 for %%I in (%MOD_NAMES:,= %) do (
   if not exist "%USER_MOD_CONFIG_FOLDER%\%%~I\" (
-    choice /C yN  /T 5 /D N /M "*** WARNING: Config file location for %%~I does not exist - Would you like to GENERATE your mod? "
+    choice /C yN  /T 5 /D N /M "*** WARNING: Config file location for %%~I does not exist - GENERATE your mod (Without modifying files) ? "
     set GENERATE_MOD_CHOICE=!ERRORLEVEL!
     if !GENERATE_MOD_CHOICE! equ 1 (
       pushd command
       call generate.bat "%%~I"
       popd
-      ) else (
+    ) else (
       rem set variable to undefined
       set "EXPORTS=!EXPORTS! & set "%%~I_MOD_GEN_VERSION=""
     )
@@ -149,9 +153,9 @@ exit /b
 
 :toggledebug
 if "%DEBUG_MODE%"=="ON" (
-  set "DEBUG_MODE=OFF"
-  ) else (
-  set "DEBUG_MODE=ON"
+  set DEBUG_MODE=OFF
+) else (
+  set DEBUG_MODE=ON
 )
 echo +++ Debug mode set to %DEBUG_MODE%
 exit /b

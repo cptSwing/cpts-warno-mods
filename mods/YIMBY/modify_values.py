@@ -34,7 +34,6 @@ def extract_terrains_list(text) -> str | None:
 
 try: 
     mod = ndf.Mod(source_mod_folder, destination_mod_folder)
-    mod.check_if_src_is_newer()
 
     replacement_object = ndf.model.Object(type='unnamed TGameplayTerrainsRegistration')
 

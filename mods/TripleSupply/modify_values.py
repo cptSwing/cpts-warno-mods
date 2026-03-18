@@ -9,8 +9,7 @@ supply_multiplier = 3
 
 try: 
     mod = ndf.Mod(source_mod_folder, destination_mod_folder)
-    mod.check_if_src_is_newer()
-
+    
     print("+ ndf_parse: Loading Buildings")
     building_descriptors_src = mod.edit(r"GameData/Generated/Gameplay/Gfx/BuildingDescriptors.ndf", not debug_mode).current_tree
 
@@ -34,6 +33,7 @@ try:
                 new_supply_capacity_value = original_supply_capacity_value * supply_multiplier
                 supply_capacity_MemberRow.edit(value=str(new_supply_capacity_value))
                 print(f"+ ndf_parse: {t_entity_descriptor_ListRow.namespace} - SupplyCapacity {original_supply_capacity_value} --> {new_supply_capacity_value}")
+                
         print(f"+ ndf_parse: Supply {descriptor_name} DONE!\n")
 
     for edit in mod.edits:
