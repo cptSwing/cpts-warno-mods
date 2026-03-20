@@ -1,9 +1,17 @@
 @echo off
+setlocal EnableDelayedExpansion
+set MOD_NAMES="DoubleSupply","TripleSupply","YIMBY","Entrench"
+
 rem change working directory to directory where script resides
 cd /d "%~dp0"
 
 call :get_config_env_variables
-set MOD_NAMES="%NDF_PARSE_SOURCE_MOD_NAME%","DoubleSupply","TripleSupply","YIMBY","Entrench"
+set WARNO_VERSION=0
+pushd %WARNO_MODS_FOLDER%\..\Data\PC
+for /D %%I in (*) do (
+  if %%I gtr !WARNO_VERSION! set "WARNO_VERSION=%%I"
+)
+popd
 call :validate_mods_folders
 call :validate_mods_config_folders
 
@@ -11,29 +19,29 @@ call :validate_mods_config_folders
 
 :main
 call :menu
-setlocal EnableDelayedExpansion
-set LOOP_INDEX=0
+set LOOP_MOD_INDEX=0
 for %%I in (%MOD_NAMES:,= %) do (
-  set /a LOOP_INDEX=!LOOP_INDEX!+1
-  if %MENU_CHOICE% equ !LOOP_INDEX! (
+  set /a LOOP_MOD_INDEX+=1
+  if %MENU_CHOICE% equ !LOOP_MOD_INDEX! (
     pushd command
-
-    if "%%~I"=="%NDF_PARSE_SOURCE_MOD_NAME%" (
-      rem deletes, recreates, regenerates the source mod
-      call create.bat "%NDF_PARSE_SOURCE_MOD_NAME%"
-      call generate.bat "%NDF_PARSE_SOURCE_MOD_NAME%"
-    ) else (
-      call process.bat "%%~I"
-    )
-
+    call process.bat "%%~I"
     popd
     goto main
   )
 )
-if %MENU_CHOICE% equ 6 call :toggledebug & goto main
-if %MENU_CHOICE% equ 7 goto end
-endlocal
-goto end
+set /a SOURCE_CHOICE=%LOOP_MOD_INDEX%+1
+if %MENU_CHOICE% equ %SOURCE_CHOICE% (
+  pushd command
+  rem deletes, recreates, regenerates the source mod
+  call create.bat "%NDF_PARSE_SOURCE_MOD_NAME%"
+  rem call generate.bat "%NDF_PARSE_SOURCE_MOD_NAME%"
+  popd
+  goto main
+)
+set /a DEBUG_CHOICE=%LOOP_MOD_INDEX%+2
+if %MENU_CHOICE% equ %DEBUG_CHOICE% goto toggledebug
+set /a END_CHOICE=%LOOP_MOD_INDEX%+3
+if %MENU_CHOICE% equ %END_CHOICE% goto end
 
 
 
@@ -41,39 +49,38 @@ goto end
 setlocal EnableDelayedExpansion
 call :get_mods_versions
 echo.
-echo *** MAIN MENU ***
-echo =================
+echo *** MAIN MENU (Game Version: %WARNO_VERSION%) ***
+echo ========================================
 echo Select an option:
 echo.
-set LOOP_INDEX=0
+echo S: Re-Create %NDF_PARSE_SOURCE_MOD_NAME%
+echo ALWAYS do this before any of the following updates^^!
+echo ----------------------------------------
+set LOOP_MOD_INDEX=0
 for %%I in (%MOD_NAMES:,= %) do (
-  set /a LOOP_INDEX=!LOOP_INDEX!+1
+  set /a LOOP_MOD_INDEX+=1
+  set MENU_VAR_!LOOP_MOD_INDEX!=!LOOP_MOD_INDEX!
   call set "THIS_MOD_GEN_VERSION=%%%%~I_MOD_GEN_VERSION%%"
   call set "THIS_MOD_VERSION=%%%%~I_MOD_VERSION%%"
-  
+
   if "!THIS_MOD_GEN_VERSION!"=="" (
-    echo !LOOP_INDEX!: Generate %%~I ^(also adds Config file^)
+    echo !LOOP_MOD_INDEX!: Generate %%~I ^(also adds Config file^)
   ) else (
     if !THIS_MOD_VERSION!==0 (
       set "VERSION_STRING=New"
     ) else (
       set "VERSION_STRING=Version !THIS_MOD_VERSION!"
     )
-    echo !LOOP_INDEX!: Re-Generate %%~I ^(!VERSION_STRING!, ModGenVersion !THIS_MOD_GEN_VERSION!^)
-  )
-  
-  if "%%~I"=="%NDF_PARSE_SOURCE_MOD_NAME%" (
-    echo ALWAYS do this before any of the following updates^^!
-    echo -----------------
+    echo !LOOP_MOD_INDEX!: Re-Generate %%~I ^(!VERSION_STRING!, ModGenVersion !THIS_MOD_GEN_VERSION!^)
   )
 )
-echo -----------------
+echo ----------------------------------------
 echo D: Toggle Debug Mode (currently %DEBUG_MODE%)
-echo -----------------
+echo ----------------------------------------
 echo X: Exit
 echo.
-endlocal
-choice /C 12345DX /M "Select an option "
+endlocal & set DYNAMIC_CHOICE_PARAM=%MENU_VAR_1%%MENU_VAR_2%%MENU_VAR_3%%MENU_VAR_4%%MENU_VAR_5%%MENU_VAR_6%%MENU_VAR_7%%MENU_VAR_8%%MENU_VAR_9%SDX
+choice /C %DYNAMIC_CHOICE_PARAM% /M "Select an option "
 set MENU_CHOICE=%ERRORLEVEL%
 exit /b
 
@@ -99,7 +106,8 @@ exit /b
 
 
 :validate_mods_folders
-for %%I in (%MOD_NAMES:,= %) do (
+set ALL_MOD_NAMES="%NDF_PARSE_SOURCE_MOD_NAME%","DoubleSupply","TripleSupply","YIMBY","Entrench"
+for %%I in (%ALL_MOD_NAMES:,= %) do (
   if not exist "%WARNO_MODS_FOLDER%\%%~I\" (
     echo --- Error: %%~I does not exist at %WARNO_MODS_FOLDER%\ - CREATING mod ...
     pushd command
@@ -157,8 +165,9 @@ if "%DEBUG_MODE%"=="ON" (
 ) else (
   set DEBUG_MODE=ON
 )
+echo.
 echo +++ Debug mode set to %DEBUG_MODE%
-exit /b
+goto main
 
 
 
