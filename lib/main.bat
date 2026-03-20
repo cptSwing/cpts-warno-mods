@@ -1,17 +1,12 @@
 @echo off
 setlocal EnableDelayedExpansion
-set MOD_NAMES="DoubleSupply","TripleSupply","YIMBY","Entrench"
 
 rem change working directory to directory where script resides
 cd /d "%~dp0"
 
+set MOD_NAMES="DoubleSupply","TripleSupply","YIMBY","Entrench"
+call :get_warno_version
 call :get_config_env_variables
-set WARNO_VERSION=0
-pushd %WARNO_MODS_FOLDER%\..\Data\PC
-for /D %%I in (*) do (
-  if %%I gtr !WARNO_VERSION! set "WARNO_VERSION=%%I"
-)
-popd
 call :validate_mods_folders
 call :validate_mods_config_folders
 
@@ -82,6 +77,17 @@ echo.
 endlocal & set DYNAMIC_CHOICE_PARAM=%MENU_VAR_1%%MENU_VAR_2%%MENU_VAR_3%%MENU_VAR_4%%MENU_VAR_5%%MENU_VAR_6%%MENU_VAR_7%%MENU_VAR_8%%MENU_VAR_9%SDX
 choice /C %DYNAMIC_CHOICE_PARAM% /M "Select an option "
 set MENU_CHOICE=%ERRORLEVEL%
+exit /b
+
+
+
+:get_warno_version
+set WARNO_VERSION=0
+pushd %WARNO_MODS_FOLDER%\..\Data\PC
+for /D %%I in (*) do (
+  if %%I gtr !WARNO_VERSION! set "WARNO_VERSION=%%I"
+)
+popd
 exit /b
 
 

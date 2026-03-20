@@ -7,13 +7,11 @@ destination_mod_folder = sys.argv[2]
 debug_mode = sys.argv[3] == "ON"
 
 # "The concealment of a unit is `UnitConcealmentBonus * TerrainConcealmentBonus / NoiseConcealmentMalus`"
-# additional_concealment_bonus = 0.25
-additional_concealment_bonus = 6
+additional_concealment_bonus = 0.25
 
 # "This would represent a 30% damage reduction on a specific terrain: (DamageFamily_he, MAP [(ResistanceFamily_infanterie, 0.7)])"
 # "A 0.7 means it would multiply by 0.7 any matching damage for matching resistance on this terrain. In other words, a 30% reduction."
-# subtracted_damage = 0.05
-subtracted_damage = 5
+subtracted_damage = 0.05
 
 try: 
     mod = ndf.Mod(source_mod_folder, destination_mod_folder)
