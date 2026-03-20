@@ -13,6 +13,7 @@ Requirements: Windows, python, [poetry](https://python-poetry.org/) (a dependanc
    WARNO_MODS_FOLDER=C:\YOUR_STEAM_FOLDER\steamapps\common\WARNO\Mods
    NDF_PARSE_SOURCE_MOD_NAME="Your Desired Source Mod Name"
    USER_MOD_CONFIG_FOLDER=C:\Users\YOUR_WINDOWS_USER_NAME\Saved Games\EugenSystems\WARNO\mod
+   DEBUG_MODE=OFF
    ```
 
    `NDF_PARSE_SOURCE_MOD_NAME` will be the name of your "Source Mod" - ndf_parse needs this to build the mods from, and the wrapper will create it for you.
@@ -26,14 +27,17 @@ Generally, every time WARNO is updated you want to re-generate your Source Mod, 
 ##### DoubleSupply
 
 [Double the Amount of Supply of Logistics Vehicles and FOB Bases (DoubleSupply Readme)](/mods/DoubleSupply/README.md)
+[Steam Workshop Link](https://steamcommunity.com/sharedfiles/filedetails/?id=3687443199)
 
 ##### TripleSupply
 
 [Triple the Amount of Supply of Logistics Vehicles and FOB Bases (TripleSupply Readme)](/mods/TripleSupply/README.md)
+[Steam Workshop Link](https://steamcommunity.com/sharedfiles/filedetails/?id=3669978306)
 
 ##### YIMBY\*
 
 [Better Protection and Stealth for Infantry in  Large Buildings / Small Buildings / Ruins (YIMBY Readme)](/mods/YIMBY/README.md)
+[Steam Workshop Link](https://steamcommunity.com/sharedfiles/filedetails/?id=3687091002)
 
 \*_Yes In My BackYard_
 
